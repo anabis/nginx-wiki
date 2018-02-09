@@ -8,7 +8,7 @@ osCommerce
 Recipe
 ------
 
-osCommerce example configuration for 0.8.x (maybe 0.7.x too?)
+osCommerce example configuration for 2.3.4 (maybe earlier too)
 
 .. code-block:: nginx
 
@@ -30,29 +30,38 @@ osCommerce example configuration for 0.8.x (maybe 0.7.x too?)
         location ^~ /download { return 403; }
 
         # osCommerce rewrites
-        location ~ -p-(?<id>[0-9]+)\.html$ { rewrite ^ /product_info.php?products_id=$id; }
-        location ~ -c-(?<id>[0-9_]+)\.html$ { rewrite ^ /index.php?cPath=$id; }
-        location ~ -m-(?<id>[0-9]+)\.html$ { rewrite ^ /index.php?manufacturers_id=$id; }
-        location ~ -pi-(?<id>[0-9]+)\.html$ { rewrite ^ /popup_image.php?pID=$id; }
-        location ~ -pr-(?<id>[0-9]+)\.html$ { rewrite ^ /product_reviews.php?products_id=$id; }
-        location ~ -pri-(?<id>[0-9]+)\.html$ { rewrite ^ /product_reviews_info.php?products_id=$id; }
-
+        location ~ ^(.*)-p-(?<id>[0-9]+).html$ { rewrite ^ /product_info.php?products_id=$id&$args; }
+        location ~ ^(.*)-c-(?<id>[0-9]+).html$ { rewrite ^ /index.php?cPath=$id&$args; }
+        location ~ ^(.*)-m-(?<id>[0-9]+).html$ { rewrite ^ /index.php?manufacturers_id=$id&$args; }
+        location ~ ^(.*)-pi-(?<id>[0-9]+).html$ { rewrite ^ /popup_image.php?pID=$id&$args; }
+        location ~ ^(.*)-pr-(?<id>[0-9]+).html$ { rewrite ^ /product_reviews.php?products_id=$id&$args; }
+        location ~ ^(.*)-pri-(?<id>[0-9]+).html$ { rewrite ^ /product_reviews_info.php?products_id=$id&$args; }
+        location ~ ^(.*)-by-(?<id>[0-9]+).html$ { rewrite ^ /all-products.php?fl=$id&$args; }
+        
         # Articles contribution
-        location ~ -t-(?<id>[0-9_]+)\.html$ { rewrite ^ /articles.php?tPath=$id; }
-        location ~ -a-(?<id>[0-9]+)\.html$ { rewrite ^ /article_info.php?articles_id=$id; }
-
+        location ~ ^(.*)-t-(?<id>[0-9]+).html$ { rewrite ^ /articles.php?tPath=$id&$args; }
+        location ~ ^(.*)-a-(?<id>[0-9]+).html$ { rewrite ^ /article_info.php?articles_id=$id&$args; }
+        location ~ ^(.*)-au-(?<id>[0-9]+).html$ { rewrite ^ /articles.php?authors_id=$id&$args; }
+        
         # Information pages
-        location ~ -i-(?<id>[0-9]+)\.html$ { rewrite ^ /information.php?info_id=$id; }
-
+        location ~ ^(.*)-i-(?<id>[0-9]+).html$ { rewrite ^ /information.php?info_id=$id&$args; }
+        location ~ ^(.*)-pm-([0-9]+).html$ { rewrite ^ /info_pages.php?pages_id=$id&$args; }
+        
         # Links contribution
-        location ~ -links-(?<id>[0-9_]+)\.html$ { rewrite ^ /links.php?lPath=$id; }
-
+        location ~ ^(.*)-links-(?<id>[0-9]+).html$ { rewrite ^ /links.php?lPath=$id&$args; }
+        
         # Newsdesk contribution
-        location ~ -n-(?<id>[0-9]+)\.html$ { rewrite ^ /newsdesk_info.php?newsdesk_id=$id; }
-        location ~ -nc-(?<id>[0-9]+)\.html$ { rewrite ^ /newsdesk_index.php?newsPath=$id; }
-        location ~ -nri-(?<id>[0-9]+)\.html$ { rewrite ^ /newsdesk_reviews_info.php?newsdesk_id=$id; }
-        location ~ -nra-(?<id>[0-9]+)\.html$ { rewrite ^ /newsdesk_reviews_article.php?newsdesk_id=$id; }
-
+        location ~ ^(.*)-n-(?<id>[0-9]+).html$ { rewrite ^ /newsdesk_info.php?newsdesk_id=$id&$args; }
+        location ~ ^(.*)-nc-(?<id>[0-9]+).html$ { rewrite ^ /newsdesk_index.php?newsPath=$id&$args; }
+        location ~ ^(.*)-nri-(?<id>[0-9]+).html$ { rewrite ^ /newsdesk_reviews_info.php?newsdesk_id=$id&$args; }
+        location ~ ^(.*)-nra-(?<id>[0-9]+).html$ { rewrite ^ /newsdesk_reviews_article.php?newsdesk_id=$id&$args; }
+        
+        # Others
+        location ~ ^(.*)-f-(?<id>[0-9]+).html$ { rewrite ^ /faqdesk_info.php?faqdesk_id=$id&$args; }
+        location ~ ^(.*)-fc-(?<id>[0-9]+).html$ { rewrite ^ /faqdesk_index.php?faqPath=$id&$args; }
+        location ~ ^(.*)-fri-(?<id>[0-9]+).html$ { rewrite ^ /faqdesk_reviews_info.php?faqdesk_id=$id&$args; }
+        location ~ ^(.*)-fra-(?<id>[0-9]+).html$ { rewrite ^ /faqdesk_reviews_article.php?faqdesk_id=$id&$args; }
+        location ~ ^(.*)-po-(?<id>[0-9]+).html$ { rewrite ^ /pollbooth.php?pollid=$id&$args; }
         # Pass to php
         location ~ \.php$ {
             if (!-f $request_filename) { return 404; }
